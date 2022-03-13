@@ -2,9 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  user-select: none;
+}
+
 @layer components {
   .flex-center {
     @apply flex justify-center items-center;
   }
 }
 
+.anim-fadeIn {
+  animation-name: fadeIn;
+  animation-duration: 600;
+  animation-fill-mode: forwards;
+}
+
+.c-input {
+  @apply h-12 border border-solid border-gray-200 focus:border-red-500 rounded-md transition-colors duration-200 outline-none px-4;
+}
+
+.c-btn {
+  @apply h-12 bg-red-500 hover:bg-red-400 active:bg-red-600 text-white font-bold rounded-md transition-colors duration-200 outline-none px-4;
+}
+
+.c-btn.disabled {
+  @apply opacity-60 pointer-events-none;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

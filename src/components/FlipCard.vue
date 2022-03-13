@@ -1,10 +1,10 @@
 <template>
-    <div class="card-wrapper flip-left" :class="{ 'flipped': is_flipped }" @click="flip($event)">
-        <div class="card">
-            <div class="front">
+    <div class="c-card flip-left" :class="{ 'c-card--flipped': is_flipped }" @click="flip($event)">
+        <div class="c-card__inner">
+            <div class="c-card__side c-card__front">
                 <slot></slot>
             </div>
-            <div class="back overflow-hidden">
+            <div class="c-card__side c-card__back">
                 <img :src="image_url" alt="__SEO__" />
             </div>
         </div>
@@ -13,6 +13,7 @@
 
 <script>
 export default {
+    emits: ['select-card'],
     props: {
         'index': {
             type: Number,
@@ -44,68 +45,70 @@ export default {
             this.is_flipped = false;
         }
     },
+    // mounted() {
+    //     console.log(this.index);
+    // }
 }
 </script>
 
-<style scoped>
-.card-wrapper {
+<style scoped  lang="scss">
+.c-card {
+    $parent: #{&};
+
     display: inline-block;
     perspective: 1000px;
-}
-.card-wrapper .card {
-    position: relative;
-    cursor: pointer;
-    transition-duration: 0.6s;
-    transition-timing-function: ease-in-out;
-    transform-style: preserve-3d;
-}
-.card-wrapper .card .front,
-.card-wrapper .card .back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    transform: rotateX(0deg);
-}
-.card-wrapper .card .front {
-    z-index: 2;
-}
-.card-wrapper.flip-left .card .back {
-    transform: rotateY(-180deg);
-}
-.flipped {
-    user-select: none;
-    pointer-events: none;
-}
-.flipped .card {
-    transform: rotateY(-180deg);
-}
-.card-wrapper,
-.card {
-    width: 100px;
-    height: 100px;
     margin: 10px;
+
+    @at-root #{$parent}__inner {
+        width: 100px;
+        height: 100px;
+
+        position: relative;
+        cursor: pointer;
+        transition-duration: 0.6s;
+        transition-timing-function: ease-in-out;
+        transform-style: preserve-3d;
+
+        @at-root #{$parent}__side {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            transform: rotateX(0deg);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #fc545e;
+            border-radius: 4px;
+        }
+
+        @at-root #{$parent}__back {
+            overflow: hidden;
+            font-size: 1.5rem;
+            color: #ffffff;
+            background: #fc545e;
+
+            transform: rotateY(-180deg);
+        }
+
+        @at-root #{$parent}__front {
+            color: #fc545e;
+            background: #ffffff;
+            font-weight: 700;
+            font-size: 1.5rem;
+            z-index: 2;
+        }
+    }
+
+    &--flipped {
+        user-select: none;
+        pointer-events: none;
+        #{$parent}__inner {
+            transform: rotateY(-180deg);
+        }
+    }
 }
-.card .front,
-.card .back {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #fc545e;
-    border-radius: 4px;
-}
-.card .front {
-    color: #fc545e;
-    background: #ffffff;
-    font-weight: 700;
-    font-size: 1rem;
-}
-.card .back {
-    font-size: 1.5rem;
-    color: #ffffff;
-    background: #fc545e;
-}
-/* w-20 h-20 flex-center bg-red-500 text-white text-2xl shadow-inner shadow-black/40 rounded-md */
 </style>

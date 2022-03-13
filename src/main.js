@@ -7,8 +7,10 @@ const app = createApp(App);
 
 // components
 import FlipCard from './components/FlipCard.vue';
+import FormIntro from './components/FormIntro.vue';
 
 app.component('flip-card', FlipCard);
+app.component('form-intro', FormIntro);
 
 app.use(store);
 app.mount('#app')
