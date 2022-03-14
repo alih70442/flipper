@@ -95,8 +95,8 @@ export default {
         }
 
         @at-root #{$parent}__front {
-            color: #fc545e;
-            background: #ffffff;
+            color: #ffffff;
+            background: #fc545e;
             font-weight: 700;
             font-size: 1.5rem;
             z-index: 2;

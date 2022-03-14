@@ -1,10 +1,11 @@
 <template>
+  <l-header></l-header>
   <div class="flex-center w-screen h-screen">
     <div class="my-auto">
-      <div class="w-[480px] anim-fadeIn" v-show="!is_game_started">
+      <div class="l-container anim-fadeIn" v-show="!is_game_started">
         <form-intro @start-game="edit_game"></form-intro>
       </div>
-      <div class="w-[480px] anim-fadeIn" v-show="is_game_started">
+      <div class="l-container anim-fadeIn" v-show="is_game_started">
         <div class="flex items-center justify-between s-full">
           <!-- <div class="text-xl text-black">امتیاز شما {{ score }}</div> -->
           <div class="text-xl text-black font-bold">تعداد حرکت: {{ choice_count }}</div>
@@ -15,28 +16,41 @@
             <span class="js-min">00</span>
           </div>
         </div>
-        <div class="flex flex-wrap flex-row-reverse w-full mt-6">
+        <div
+          class="flex flex-wrap flex-row-reverse w-full mt-6"
+          :class="{ 'pointer-events-none opacity-40': is_lost || is_win }"
+        >
           <div v-for="(number, index) in numbers" :key="number">
             <flip-card :index="number" @select-card="choose" ref="cards">{{ index + 1 }}</flip-card>
           </div>
         </div>
+
         <button type="button" class="c-btn" v-if="is_lost" @click="restart_game">شروع دوباره</button>
+
+        <div class="flex items-center justify-between" v-if="is_win">
+          <button type="button" class="c-btn">شروع مجدد</button>
+          <button type="button" class="c-btn">نتایج کل</button>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import LHeader from './components/layouts/Lheader.vue';
 import FlipCard from './components/FlipCard.vue';
 import FormIntro from './components/FormIntro.vue';
 import Timeout from './../src/assets/js/classes/Timeout';
 import Timer from './../src/assets/js/classes/Timer';
+import shuffle_array from './assets/js/functions/array/shuffle';
 
 export default {
-  components: [FlipCard, FormIntro],
+  components: [LHeader, FlipCard, FormIntro],
   data() {
     return {
       is_game_started: false,
+      is_win: false,
+
       time: 120,
       choice_count: 40,
 
@@ -52,7 +66,10 @@ export default {
   },
   computed: {
     is_lost() {
-      return this.choice_count <= 0;
+      const is_lost = this.choice_count <= 0 || 16 - this.paired_indexes.length > this.choice_count;
+      if (is_lost)
+        this.execute_on_lose();
+      return is_lost;
     }
   },
   methods: {
@@ -66,15 +83,6 @@ export default {
       selector_timer.querySelector('.js-min').innerText = Timer.decorate(formated_time.min);
 
       this.is_game_started = true;
-    },
-    shuffle_array(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-      }
-      return array;
     },
     choose(id, index) {
       if (this.timer === null)
@@ -173,14 +181,19 @@ export default {
       this.numbers = [...Array(16).keys()];
       this.paired_indexes = [];
 
-      this.numbers = this.shuffle_array(this.numbers);
+      this.numbers = shuffle_array(this.numbers);
       this.solve();
     },
     execute_on_lose() {
+      console.log('lose');
       if (this.timer !== null)
         this.timer.pause();
 
-      console.log('you lose!');
+      if (this.choice_count <= 0) {
+        console.log('حرکت هایتان به پایان رسیده است.');
+      } else {
+        console.log('تعداد حرکاتتان برای پایان بازی کافی نیست.');
+      }
     },
     execute_on_win() {
       console.log('you win!');

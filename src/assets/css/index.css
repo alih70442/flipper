@@ -12,6 +12,10 @@ body {
   }
 }
 
+.l-container {
+  @apply w-[480px] max-w-full mx-auto;
+}
+
 .anim-fadeIn {
   animation-name: fadeIn;
   animation-duration: 600;
