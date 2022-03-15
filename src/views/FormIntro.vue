@@ -1,47 +1,56 @@
 <template>
-  <h1 class="text-2xl font-bold text-gray-800 text-center">به بازی فلیپر خوش آمدید!</h1>
-  <p
-    class="text-gray-600 text-center mt-4"
-  >برای شروع بازی، تنظیمات آنرا وارد کرده و روی دکمه شروع کلیک کنید.</p>
-  <div class="flex flex-col mt-6">
-    <label for="input-moves" class="text-gray-600 mb-2">تعداد حرکات</label>
-    <input
-      type="number"
-      id="input-moves"
-      min="16"
-      class="c-input"
-      v-model="moves_count"
-      @change="set_range"
-    />
-    <p class="text-sm text-red-500 mt-2" v-html="error_moves_count"></p>
+  <div class="l-container">
+    <h1 class="text-2xl font-bold text-gray-800 text-center">به بازی فلیپر خوش آمدید!</h1>
+    <p
+      class="text-gray-600 text-center mt-4"
+    >برای شروع بازی، تنظیمات آنرا وارد کرده و روی دکمه شروع کلیک کنید.</p>
+    <div class="flex flex-col mt-6">
+      <label for="input-moves" class="text-gray-600 mb-2">تعداد حرکات</label>
+      <input
+        type="number"
+        id="input-moves"
+        min="16"
+        class="c-input"
+        v-model="moves_count"
+        @change="set_range"
+      />
+      <p class="text-sm text-red-500 mt-2" v-html="error_moves_count"></p>
+    </div>
+    <div class="flex flex-col mt-4">
+      <label for="input-time" class="text-gray-600 mb-2">
+        زمان بازی
+        <span class="text-xs text-gray-400">(به ثانیه)</span>
+      </label>
+      <input
+        type="number"
+        id="input-time"
+        min="0"
+        class="c-input"
+        v-model="time"
+        @change="set_range"
+      />
+      <p class="text-sm text-red-500 mt-2" v-html="error_time"></p>
+    </div>
+    <div class="flex flex-col mt-4">
+      <p class="text-gray-600 text-left mb-2">{{ range_text }}</p>
+      <input
+        type="range"
+        id="input-range"
+        min="20"
+        max="100"
+        step="10"
+        v-model="range"
+        @change="set_options"
+      />
+      <!-- <p class="text-sm text-red-500 mt-2" v-html="error_range"></p> -->
+    </div>
+    <button
+      type="button"
+      class="c-btn w-full mt-4"
+      :class="{ 'disabled': is_btn_disbled }"
+      @click="submit"
+    >شروع</button>
   </div>
-  <div class="flex flex-col mt-4">
-    <label for="input-time" class="text-gray-600 mb-2">
-      زمان بازی
-      <span class="text-xs text-gray-400">(به ثانیه)</span>
-    </label>
-    <input type="number" id="input-time" min="0" class="c-input" v-model="time" @change="set_range" />
-    <p class="text-sm text-red-500 mt-2" v-html="error_time"></p>
-  </div>
-  <div class="flex flex-col mt-4">
-    <p class="text-gray-600 text-left mb-2">{{ range_text }}</p>
-    <input
-      type="range"
-      id="input-range"
-      min="20"
-      max="100"
-      step="10"
-      v-model="range"
-      @change="set_options"
-    />
-    <!-- <p class="text-sm text-red-500 mt-2" v-html="error_range"></p> -->
-  </div>
-  <button
-    type="button"
-    class="c-btn w-full mt-4"
-    :class="{ 'disabled': is_btn_disbled }"
-    @click="submit"
-  >شروع</button>
 </template>
 
 <script>

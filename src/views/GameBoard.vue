@@ -1,28 +1,30 @@
 <template>
-    <div class="flex items-center justify-between s-full">
-        <!-- <div class="text-xl text-black">امتیاز شما {{ score }}</div> -->
-        <div class="text-xl text-black font-bold">تعداد حرکت: {{ choice_count }}</div>
-        <div class="text-xl text-black font-bold js-timer">
-            زمان:
-            <span class="js-sec">00</span>
-            :
-            <span class="js-min">00</span>
+    <div class="l-container">
+        <div class="flex items-center justify-between s-full">
+            <!-- <div class="text-xl text-black">امتیاز شما {{ score }}</div> -->
+            <div class="text-xl text-black font-bold">تعداد حرکت: {{ choice_count }}</div>
+            <div class="text-xl text-black font-bold js-timer">
+                زمان:
+                <span class="js-sec">00</span>
+                :
+                <span class="js-min">00</span>
+            </div>
         </div>
-    </div>
-    <div
-        class="flex flex-wrap flex-row-reverse w-full mt-6"
-        :class="{ 'pointer-events-none opacity-50': is_lost || is_win }"
-    >
-        <div v-for="(number, index) in numbers" :key="number">
-            <flip-card :index="number" @select-card="choose" ref="cards">{{ index + 1 }}</flip-card>
+        <div
+            class="flex flex-wrap flex-row-reverse justify-center w-full mt-6"
+            :class="{ 'pointer-events-none opacity-50': is_lost || is_win }"
+        >
+            <div v-for="(number, index) in numbers" :key="number">
+                <flip-card :index="number" @select-card="choose" ref="cards">{{ index + 1 }}</flip-card>
+            </div>
         </div>
-    </div>
 
-    <button type="button" class="c-btn" v-if="is_lost" @click="restart_game">شروع دوباره</button>
+        <button type="button" class="c-btn" v-if="is_lost" @click="restart_game">شروع دوباره</button>
 
-    <div class="flex items-center justify-between" v-if="is_win">
-        <button type="button" class="c-btn">شروع مجدد</button>
-        <button type="button" class="c-btn">نتایج کل</button>
+        <div class="flex items-center justify-between" v-if="is_win">
+            <button type="button" class="c-btn">شروع مجدد</button>
+            <button type="button" class="c-btn">نتایج کل</button>
+        </div>
     </div>
 </template>
 
@@ -144,7 +146,7 @@ export default {
                     console.log('timer started');
                 },
                 on_end: () => {
-                    console.log('timer finished');
+                    this.execute_on_lose();
                 }
             });
             this.timer.start();
@@ -179,6 +181,10 @@ export default {
                 lose_text = 'تعداد حرکاتتان برای پایان بازی کافی نیست.';
             }
 
+            if (this.timer.get_remaining() === 0) {
+                lose_text = 'زمان بازی به پایان رسیده است.';
+            }
+
             this.$swal.fire({
                 icon: 'error',
                 title: 'شما باختید!',
@@ -189,23 +195,15 @@ export default {
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    console.log('go to results');
+                    this.$router.push('/records');
                 } else {
-                    this.restart_game();
+                    this.$router.push('/start');
                 }
             })
         },
         execute_on_win() {
 
-            const game_data = {
-                'choice_count': this.full_choice_count,
-                'remaining_choice_count': this.choice_count,
-                'time': this.time,
-                'remaining_time': this.timer.get_remaining(),
-            };
-
-            const storage = ArrayStorage.create('records');
-            storage.push(game_data);
+            this.save_infos();
 
             this.$swal.fire({
                 icon: 'error',
@@ -217,12 +215,24 @@ export default {
                 reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
-                    console.log('go to results');
+                    this.$router.push('/records');
                 } else {
-                    this.restart_game();
+                    this.$router.push('/start');
                 }
             })
         },
+        save_infos() {
+            const game_data = {
+                'id': (new Date()).getTime(),
+                'choice_count': this.full_choice_count,
+                'used_choice_count': this.full_choice_count - this.choice_count,
+                'time': this.time,
+                'used_time': this.time - this.timer.get_remaining(),
+            };
+
+            const storage = ArrayStorage.create('records');
+            storage.push(game_data);
+        }
     },
     mounted() {
         this.restart_game();
