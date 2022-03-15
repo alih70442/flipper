@@ -157,7 +157,7 @@ export default {
       }
     },
     submit() {
-      this.$emit('start-game', this.time, this.moves_count);
+      this.$router.push({ path: '/board', query: { time: this.time, moves_count: this.moves_count } });
     }
   }
 }

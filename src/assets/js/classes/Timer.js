@@ -95,6 +95,10 @@ export default class Timer extends Base {
         clearInterval(this.interval);
     }
 
+    get_remaining() {
+        return this.curr_time;
+    }
+
     set_on_start_cb(cb) {
         if (cb)
             this.options.on_start = cb;
