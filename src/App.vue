@@ -14,18 +14,5 @@ import LHeader from './components/layouts/Lheader.vue';
 
 export default {
   components: [LHeader],
-  data() {
-    return {
-    }
-  },
-  computed: {
-  },
-  methods: {
-  },
-  mounted() {
-  }
 }
 </script>
-
-<style>
-</style>

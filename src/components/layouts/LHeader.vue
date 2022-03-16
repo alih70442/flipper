@@ -33,10 +33,6 @@ export default {
             this.route_url = this.$router.currentRoute._rawValue.path;
         }
     },
-    computed: {
-    },
-    methods: {
-    },
     created() {
         this.route_url = this.$router.currentRoute._rawValue.path;
     }

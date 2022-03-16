@@ -5,7 +5,7 @@
                 <slot></slot>
             </div>
             <div class="c-card__side c-card__back">
-                <img :src="image_url" alt="__SEO__" />
+                <img :src="image_url" alt="تصویر کارت بازی" />
             </div>
         </div>
     </div>
@@ -23,7 +23,6 @@ export default {
     data() {
         return {
             is_flipped: false,
-            solved: false
         }
     },
     computed: {
@@ -45,13 +44,10 @@ export default {
             this.is_flipped = false;
         }
     },
-    // mounted() {
-    //     console.log(this.index);
-    // }
 }
 </script>
 
-<style scoped  lang="scss">
+<style scoped lang="scss">
 .c-card {
     $parent: #{&};
     width: 74px;

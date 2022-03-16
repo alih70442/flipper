@@ -1,7 +1,6 @@
 <template>
     <div class="l-container">
         <div class="flex items-center justify-between s-full">
-            <!-- <div class="text-xl text-black">امتیاز شما {{ score }}</div> -->
             <div class="flex items-center text-xl text-black font-bold">
                 <i class="icon-chess text-xl ml-1"></i>
                 {{ choice_count }}
@@ -68,6 +67,10 @@ export default {
     },
     methods: {
         edit_options(time, moves_count) {
+
+            if (time < 16 || moves_count < 16)
+                this.$router.push('/start');
+
             this.time = time;
             this.full_choice_count = moves_count;
             this.choice_count = moves_count;
@@ -177,7 +180,6 @@ export default {
             // this.solve();
         },
         execute_on_lose() {
-            console.log('on lose');
             let lose_text = 'حرکت هایتان به پایان رسیده است.';
 
             this.is_playing = false;
@@ -212,7 +214,6 @@ export default {
             })
         },
         execute_on_win() {
-            console.log('on win');
             if (this.timer !== null)
                 this.timer.pause();
 
@@ -290,6 +291,3 @@ export default {
     }
 }
 </script>
-
-<style>
-</style>
