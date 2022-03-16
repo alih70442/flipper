@@ -4,7 +4,7 @@ import FormIntro from './../views/FormIntro.vue';
 import GameBoard from './../views/GameBoard.vue';
 import GameRecords from './../views/GameRecords.vue';
 
-export default createRouter({
+const router = createRouter({
     history: createWebHistory(),
     routes: [
         { path: '/', redirect: { name: 'formIntro' } },
@@ -13,3 +13,5 @@ export default createRouter({
         { path: '/records', component: GameRecords, name: 'game-records' },
     ]
 });
+
+export default router;

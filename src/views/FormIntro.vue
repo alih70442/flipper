@@ -1,11 +1,17 @@
 <template>
   <div class="l-container">
-    <h1 class="text-2xl font-bold text-gray-800 text-center">به بازی فلیپر خوش آمدید!</h1>
+    <h1 class="text-2xl font-bold text-gray-800 text-center">
+      به بازی
+      <strong class="text-red-500">فلیپر</strong> خوش آمدید!
+    </h1>
     <p
       class="text-gray-600 text-center mt-4"
     >برای شروع بازی، تنظیمات آنرا وارد کرده و روی دکمه شروع کلیک کنید.</p>
     <div class="flex flex-col mt-6">
-      <label for="input-moves" class="text-gray-600 mb-2">تعداد حرکات</label>
+      <label for="input-moves" class="text-gray-600 mb-2">
+        <i class="icon-chess text-xl ml-1"></i>
+        تعداد حرکات
+      </label>
       <input
         type="number"
         id="input-moves"
@@ -18,13 +24,14 @@
     </div>
     <div class="flex flex-col mt-4">
       <label for="input-time" class="text-gray-600 mb-2">
+        <i class="icon-timer text-xl ml-1"></i>
         زمان بازی
         <span class="text-xs text-gray-400">(به ثانیه)</span>
       </label>
       <input
         type="number"
         id="input-time"
-        min="0"
+        min="16"
         class="c-input"
         v-model="time"
         @change="set_range"
@@ -42,14 +49,16 @@
         v-model="range"
         @change="set_options"
       />
-      <!-- <p class="text-sm text-red-500 mt-2" v-html="error_range"></p> -->
     </div>
     <button
       type="button"
       class="c-btn w-full mt-4"
       :class="{ 'disabled': is_btn_disbled }"
       @click="submit"
-    >شروع</button>
+    >
+      <i class="icon-power text-xl ml-2"></i>
+      شروع
+    </button>
   </div>
 </template>
 
@@ -62,7 +71,7 @@ export default {
   data() {
     return {
       range: 40,
-      range_text: 'بدک نیست',
+      range_text: '(:',
 
       moves_count: 40,
       time: 120,
@@ -90,8 +99,8 @@ export default {
       if (this.time === '') {
         this.error_time = 'زمان بازی نمی&zwnj;تواند خالی باشد.'
         is_disabled = true;
-      } else if (this.time < 0) {
-        this.error_time = 'زمان بازی نمی&zwnj;تواند از 0  کمتر باشد.'
+      } else if (this.time < 16) {
+        this.error_time = 'زمان بازی نمی&zwnj;تواند از 16  کمتر باشد.'
         is_disabled = true;
       }
 

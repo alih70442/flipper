@@ -2,28 +2,27 @@
     <div class="l-container">
         <div class="flex items-center justify-between s-full">
             <!-- <div class="text-xl text-black">امتیاز شما {{ score }}</div> -->
-            <div class="text-xl text-black font-bold">تعداد حرکت: {{ choice_count }}</div>
-            <div class="text-xl text-black font-bold js-timer">
-                زمان:
+            <div class="flex items-center text-xl text-black font-bold">
+                <i class="icon-chess text-xl ml-1"></i>
+                {{ choice_count }}
+            </div>
+            <div class="flex items-center text-xl text-black font-bold js-timer">
+                <i class="icon-timer text-xl ml-1"></i>
                 <span class="js-sec">00</span>
                 :
                 <span class="js-min">00</span>
             </div>
         </div>
-        <div
-            class="flex flex-wrap flex-row-reverse justify-center w-full mt-6"
-            :class="{ 'pointer-events-none opacity-50': is_lost || is_win }"
-        >
-            <div v-for="(number, index) in numbers" :key="number">
-                <flip-card :index="number" @select-card="choose" ref="cards">{{ index + 1 }}</flip-card>
+        <div class="flex justify-center w-full mt-6">
+            <div class="w-[296px] xs:w-full flex flex-wrap flex-row-reverse justify-center">
+                <flip-card
+                    v-for="(number, index) in numbers"
+                    :key="number"
+                    :index="number"
+                    @select-card="choose"
+                    ref="cards"
+                >{{ index + 1 }}</flip-card>
             </div>
-        </div>
-
-        <button type="button" class="c-btn" v-if="is_lost" @click="restart_game">شروع دوباره</button>
-
-        <div class="flex items-center justify-between" v-if="is_win">
-            <button type="button" class="c-btn">شروع مجدد</button>
-            <button type="button" class="c-btn">نتایج کل</button>
         </div>
     </div>
 </template>
@@ -39,7 +38,7 @@ export default {
     components: [FlipCard],
     data() {
         return {
-            is_win: false,
+            is_playing: false,
 
             time: 120,
             choice_count: 40,
@@ -58,9 +57,13 @@ export default {
     computed: {
         is_lost() {
             const is_lost = this.choice_count <= 0 || 16 - this.paired_indexes.length > this.choice_count + 1;
-            if (is_lost)
-                this.execute_on_lose();
             return is_lost;
+        }
+    },
+    watch: {
+        is_lost(newVal, oldVal) {
+            if (newVal)
+                this.execute_on_lose();
         }
     },
     methods: {
@@ -80,7 +83,7 @@ export default {
 
             this.choice_count--;
 
-            if (this.choice_count <= 0) {
+            if (this.choice_count < 0) {
                 this.execute_on_lose();
                 return;
             }
@@ -116,8 +119,10 @@ export default {
             Timeout.create({
                 time: 1000,
                 callback: () => {
-                    this.$refs.cards[first_card].unflip();
-                    this.$refs.cards[second_card].unflip();
+                    if (this.$refs.cards[first_card] !== null)
+                        this.$refs.cards[first_card].unflip();
+                    if (this.$refs.cards[second_card] !== null)
+                        this.$refs.cards[second_card].unflip();
                 }
             }).init();
         },
@@ -143,7 +148,7 @@ export default {
                 min: selector_timer.querySelector('.js-min'),
                 init_time: this.time,
                 on_start: () => {
-                    console.log('timer started');
+                    this.is_playing = true;
                 },
                 on_end: () => {
                     this.execute_on_lose();
@@ -169,10 +174,13 @@ export default {
             this.paired_indexes = [];
 
             this.numbers = shuffle_array(this.numbers);
-            this.solve();
+            // this.solve();
         },
         execute_on_lose() {
+            console.log('on lose');
             let lose_text = 'حرکت هایتان به پایان رسیده است.';
+
+            this.is_playing = false;
 
             if (this.timer !== null)
                 this.timer.pause();
@@ -181,9 +189,11 @@ export default {
                 lose_text = 'تعداد حرکاتتان برای پایان بازی کافی نیست.';
             }
 
-            if (this.timer.get_remaining() === 0) {
+            if (this.timer.get_remaining() <= 0) {
                 lose_text = 'زمان بازی به پایان رسیده است.';
             }
+
+            this.save_infos(false);
 
             this.$swal.fire({
                 icon: 'error',
@@ -202,11 +212,16 @@ export default {
             })
         },
         execute_on_win() {
+            console.log('on win');
+            if (this.timer !== null)
+                this.timer.pause();
+
+            this.is_playing = false;
 
             this.save_infos();
 
             this.$swal.fire({
-                icon: 'error',
+                icon: 'success',
                 title: 'شما برنده شدید!',
                 text: 'ایول، حرکاتت هم دقیق بود و هم به جا!',
                 showCancelButton: true,
@@ -221,13 +236,15 @@ export default {
                 }
             })
         },
-        save_infos() {
+        save_infos(is_win = true) {
             const game_data = {
                 'id': (new Date()).getTime(),
+                'is_win': is_win,
                 'choice_count': this.full_choice_count,
                 'used_choice_count': this.full_choice_count - this.choice_count,
                 'time': this.time,
                 'used_time': this.time - this.timer.get_remaining(),
+                'local_time': (new Date()).toLocaleString()
             };
 
             const storage = ArrayStorage.create('records');
@@ -238,6 +255,38 @@ export default {
         this.restart_game();
 
         this.edit_options(this.$route.query.time, this.$route.query.moves_count);
+    },
+    beforeUnmount() {
+        if (this.timer !== null) {
+            this.timer.set_on_end_cb(() => { });
+            this.timer = null;
+        }
+    },
+    beforeRouteLeave(to, from, next) {
+        if (this.timer !== null) {
+            this.timer.pause();
+        }
+
+        if (this.is_playing) {
+
+            this.$swal.fire({
+                icon: 'info',
+                title: 'اخطار!',
+                text: 'بازی کاملا به پایان نرسیده است، با ترک این صفحه اطلاعات آن نیز از بین میرود!',
+                showCancelButton: true,
+                confirmButtonText: 'ترک بازی',
+                cancelButtonText: 'ادامه بازی',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    next();
+                } else {
+                    this.timer.start();
+                }
+            })
+        } else {
+            next();
+        }
     }
 }
 </script>

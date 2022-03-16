@@ -1,5 +1,5 @@
 <template>
-    <div class="c-card flip-left" :class="{ 'c-card--flipped': is_flipped }" @click="flip($event)">
+    <div class="c-card" :class="{ 'c-card--flipped': is_flipped }" @click="flip($event)">
         <div class="c-card__inner">
             <div class="c-card__side c-card__front">
                 <slot></slot>
@@ -54,14 +54,27 @@ export default {
 <style scoped  lang="scss">
 .c-card {
     $parent: #{&};
+    width: 74px;
+    height: 74px;
+
+    padding: 6px;
+
+    @media screen and (min-width: 480px) {
+        width: 106px;
+        height: 106px;
+    }
+
+    @media screen and (min-width: 640px) {
+        width: 116px;
+        height: 116px;
+    }
 
     display: inline-block;
     perspective: 1000px;
-    margin: 10px;
 
     @at-root #{$parent}__inner {
-        width: 100px;
-        height: 100px;
+        width: 100%;
+        height: 100%;
 
         position: relative;
         cursor: pointer;

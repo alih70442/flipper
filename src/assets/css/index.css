@@ -2,8 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Estedad";
+  src: url("../fonts/Estedad-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "fontIcon";
+  src: url("../fonts/fontIcon.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"],
+[class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: "fontIcon" !important;
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  vertical-align: middle;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   user-select: none;
+  font-family: "Estedad" !important;
 }
 
 @layer components {
@@ -13,7 +47,7 @@ body {
 }
 
 .l-container {
-  @apply w-[540px] max-w-full mx-auto;
+  @apply w-[540px] max-w-full mx-auto px-3;
 }
 
 .anim-fadeIn {
@@ -41,4 +75,60 @@ body {
   100% {
     opacity: 1;
   }
+}
+
+.router-enter-active,
+.router-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.router-enter-from,
+.router-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.list-move,
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.list-leave-active {
+  position: absolute;
+}
+
+/* icons */
+.icon-analytics:before {
+  content: "\e900";
+}
+.icon-chess:before {
+  content: "\e901";
+}
+.icon-trash:before {
+  content: "\e902";
+}
+.icon-timer:before {
+  content: "\e903";
+}
+.icon-start:before {
+  content: "\e904";
+}
+.icon-power:before {
+  content: "\e905";
 }
