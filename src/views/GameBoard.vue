@@ -7,10 +7,10 @@
                 {{ choice_count }}
             </div>
             <div class="flex items-center text-xl text-black font-bold js-timer">
-                <i class="icon-timer text-xl ml-1"></i>
                 <span class="js-sec">00</span>
                 :
                 <span class="js-min">00</span>
+                <i class="icon-timer text-xl mr-1"></i>
             </div>
         </div>
         <div class="flex justify-center w-full mt-6">
