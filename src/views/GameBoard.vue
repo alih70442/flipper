@@ -32,6 +32,7 @@ import Timeout from './../assets/js/classes/Timeout';
 import Timer from './../assets/js/classes/Timer';
 import shuffle_array from './../assets/js/functions/array/shuffle';
 import { ArrayStorage } from './../assets/js/classes/Storage';
+import { calc_accuracy } from './../assets/js/functions/game';
 
 export default {
     components: [FlipCard],
@@ -238,13 +239,17 @@ export default {
             })
         },
         save_infos(is_win = true) {
+            const used_time = this.time - this.timer.get_remaining();
+            const used_choice_count = this.full_choice_count - this.choice_count;
+
             const game_data = {
                 'id': (new Date()).getTime(),
                 'is_win': is_win,
                 'choice_count': this.full_choice_count,
-                'used_choice_count': this.full_choice_count - this.choice_count,
+                'used_choice_count': used_choice_count,
                 'time': this.time,
-                'used_time': this.time - this.timer.get_remaining(),
+                'used_time': used_time,
+                'accuracy': is_win ? calc_accuracy(this.time, used_time, this.full_choice_count, used_choice_count) : 0,
                 'local_time': (new Date()).toLocaleString()
             };
 

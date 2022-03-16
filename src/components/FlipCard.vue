@@ -5,7 +5,7 @@
                 <slot></slot>
             </div>
             <div class="c-card__side c-card__back">
-                <img :src="image_url" alt="تصویر کارت بازی" />
+                <img :src="image_url" :alt="'تصویر' + get_id()" />
             </div>
         </div>
     </div>
@@ -27,7 +27,7 @@ export default {
     },
     computed: {
         image_url() {
-            return '../src/assets/images/products/' + this.get_id() + '.jpg';
+            return  import.meta.env.DEV ? '/public/images/products/' + this.get_id() + '.jpg' : '/images/products/' + this.get_id() + '.jpg';
         }
     },
     methods: {

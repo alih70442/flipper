@@ -114,6 +114,9 @@ body {
 }
 
 /* icons */
+.icon-sort:before {
+  content: "\e906";
+}
 .icon-analytics:before {
   content: "\e900";
 }

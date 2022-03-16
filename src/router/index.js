@@ -11,7 +11,7 @@ const router = createRouter({
         { path: '/start', component: FormIntro, name: 'form-intro' },
         { path: '/board', component: GameBoard, name: 'game-board' },
         { path: '/records', component: GameRecords, name: 'game-records' },
-        { path: '/:notFound(.*)', redirect: { name: 'formIntro' } },
+        { path: '/:notFound(.*)', redirect: { name: 'form-intro' } },
     ]
 });
 

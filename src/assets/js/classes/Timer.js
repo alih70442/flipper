@@ -43,14 +43,14 @@ export default class Timer extends Base {
         obj.options.on_start();
 
         calc_and_print(obj.curr_time);
-        
+
         obj.curr_time--;
 
         obj.interval = setInterval(() => {
 
             calc_and_print(obj.curr_time);
 
-            if (obj.curr_time < 0) {
+            if (obj.curr_time <= 0) {
                 clearInterval(obj.interval);
 
                 if (obj.day)
